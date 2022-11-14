@@ -1,9 +1,19 @@
-require 'rspec/autorun'
+#!/usr/bin/env ruby
+if ARGV.length != 1
+    puts "We need exactly one parameter. The name of a file."
+    exit;
+end
+ 
+filename = ARGV[0]
+puts "Going to open '#{filename}'"
+file = open filename
+
+require 'rspec'
 
 class Log
-  def parse(file)
+  def parse(content)
     counts = {}
-    File.open(file).each_line do |line|
+    content.each_line do |line|
       page, _ = line.split
 
       # Count each webpage views
@@ -18,23 +28,6 @@ class Log
   end
 end
 
-Log.new.parse("webserver.log")
+result = Log.new.parse(file)
+puts result
 
-describe "Parse" do
-  EXPECTED = [["/help_page/1", 4],
- ["/home", 2],
- ["/contact", 1],
- ["/about/2", 1],
- ["/index", 1],
- ["/about", 1]]
-
-  it "Elements in descending order" do
-    fake_source = "fake.log"
-    actual = Log.new.parse(fake_source)
-
-    elem_0 = actual[0][1]
-    elem_1 = actual[1][1]
-
-    expect(actual).to eq EXPECTED
-  end
-end
