@@ -2,18 +2,34 @@ require 'rspec/autorun'
 
 class Log
   def parse(file)
-    File.read(file)
+    result = {}
+    File.read(file).each_line do |line|
+      page, _ = line.split
+
+      if result[page]
+        result[page] += 1
+      else
+        result[page] = 1
+      end
+    end
+    result
   end
 end
 
-p Log.new.parse("webserver.log")
+Log.new.parse("webserver.log")
 
-describe Log do
-  fake_source = "/about/2 543.910.244.929\n/help_page/1 200.017.277.774\n/home 126.318.035.038\n/about/2 184.123.665.067\n/home 451.106.204.921\n/home 200.017.277.774\n/about/2 200.017.277.774\n/about 543.910.244.929\n"
+describe "Parse" do
+  FAKE_SOURCE = """
+  /about/2 543.910.244.929
+  /help_page/1 200.017.277.774
+  /home 126.318.035.038
+  /about/2 184.123.665.067
+  /home 451.106.204.921
+  /home 200.017.277.774
+  /about/2 200.017.277.774
+  /about 543.910.244.929
+  """.strip.freeze
 
-  it "Count each page views" do
-  end
-
-  it "Sort page visits in descending order" do
+  it "Counts and sort each page views" do
   end
 end
