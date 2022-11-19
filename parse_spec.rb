@@ -2,32 +2,26 @@ require 'rspec'
 require './parse.rb'
 
 describe "Parse" do
-  EXPECTED = [["/help_page/1", 4],
- ["/home", 2],
- ["/contact", 1],
- ["/about/2", 1],
- ["/index", 1],
- ["/about", 1]]
+  EXPECTED = [["/help_page/1", [4, 4]], ["/home", [3, 2]], ["/contact", [1, 1]], ["/about/2", [1, 1]], ["/index", [1, 1]], ["/about", [1, 1]]]
 
-  ACTUAL_SOURE = """
-    /help_page/1 126.318.035.038
-    /contact 184.123.665.067
-    /home 184.123.665.067
-    /about/2 444.701.448.104
-    /help_page/1 929.398.951.889
-    /index 444.701.448.104
-    /help_page/1 722.247.931.582
-    /about 061.945.150.735
-    /help_page/1 646.865.545.408
-    /home 235.313.352.950
-  """.strip.freeze
+  subject { Parse.new(test_file).parse }
+  let(:test_file) { ['test.log'] }
+  
+  before(:each) do
+   @new_subject = subject.each { |el| el[1][1] = el[1][1].length }
+  end
 
-  it "Elements in descending order" do
-    actual = Log.new.parse(ACTUAL_SOURE)
+  it "Execute parse method" do
+    subject
+  end
 
-    elem_0 = actual[0][1]
-    elem_1 = actual[1][1]
+  it "Each page in descending order" do
+   sorted = @new_subject.sort_by { |k, v| -v[0] }
+   expect(sorted).to eq EXPECTED
+  end
 
-    expect(actual).to eq EXPECTED
+  it "Each unique view in descending order" do
+    sorted = @new_subject.sort_by { |k, v| -v[1] }
+    expect(sorted).to eq EXPECTED
   end
 end

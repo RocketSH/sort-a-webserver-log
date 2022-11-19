@@ -16,7 +16,7 @@ class Parse
     file.each_line do |line|
       url, ip = line.split
 
-      # Count visits and unique views of each page
+      # Count visits and unique views of each url
       # {"url": [visits, unique_views]}
       if counts[url]
         counts[url][0] += 1
@@ -43,6 +43,8 @@ end
 if ARGV.length != 1
   puts "We need exactly one parameter. The name of a file."
   exit;
+elsif ARGV[0] == 'parse_spec.rb'
+  ARGV[0] = 'test.log'
 else
   Parse.new(ARGV).parse
 end
